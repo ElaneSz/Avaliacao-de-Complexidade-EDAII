@@ -115,9 +115,9 @@ Fluxo: geração → inserção → medição → remoção → reconstrução �
 
 ### 5.2 Remoção
 
--   Rubro-Negra = melhor
+-   Rubro-Negra = barato
 -   AVL = cara
--   B-tree: t=1 muito caro; t=10 barato
+-   B-tree: t=1 muito caro; t=10 melhor
 
 ------------------------------------------------------------------------
 
