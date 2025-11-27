@@ -1,163 +1,144 @@
-# Relatório de Avaliação de Complexidade
+# Avaliação de Complexidade
 
 ## Inserção e Remoção em Árvores AVL, Rubro-Negra e B-Tree
 
----
+------------------------------------------------------------------------
 
 ## 1. Introdução
 
-Este trabalho compara o custo computacional das operações de inserção e remoção em três estruturas de dados balanceadas:
+Este trabalho analisa e compara o custo computacional das operações de
+**inserção** e **remoção** em três estruturas de dados balanceadas:
 
-* **Árvore AVL**
-* **Árvore Rubro-Negra**
-* **Árvore B** (avaliada nas ordens 1, 5 e 10)
+-   **Árvore AVL**
+-   **Árvore Rubro-Negra**
+-   **Árvore B** (avaliadas nas ordens 1, 5 e 10)
 
-O experimento mede o total de operações internas de cada algoritmo, incluindo rotações, acessos, reestruturações e movimentações realizadas para garantir o balanceamento.
+O foco está na **contabilização do esforço interno**, como rotações,
+acessos, reestruturações e movimentações de ponteiros.
+A análise prática é feita com base no número total de operações
+realizadas internamente por cada estrutura.
 
-Foram executados testes variando o número de chaves de **1 a 10.000**, repetidos **10 vezes para cada tamanho**, utilizando valores aleatórios sem repetição.
+Os experimentos foram executados com quantidades variando de **1 a
+10.000 chaves**, repetidos **10 vezes por tamanho**, usando valores
+aleatórios **sem repetição**.
 
----
+------------------------------------------------------------------------
 
 ## 2. Metodologia
 
 ### 2.1 Geração das chaves
 
-Para cada tamanho `n`:
+Para cada tamanho `n`, o processo é:
 
-1. Geram-se `n` chaves aleatórias únicas utilizando `rand()`.
-2. Cada estrutura:
-
-   * recebe todas as chaves para inserção;
-   * tem o custo registrado;
-   * é totalmente esvaziada via remoções individuais;
-   * tem o custo de remoção também registrado.
+1.  Geram-se `n` inteiros únicos usando Fisher-Yates.
+2.  A estrutura recebe as chaves para inserção.
+3.  A estrutura é completamente esvaziada via remoções individuais.
+4.  Cada etapa tem suas contagens de operações medidas e acumuladas.
 
 ### 2.2 Amostragem estatística
 
-Cada valor de `n` é repetido **10 vezes**, sendo calculadas as médias.
+Cada experimento é repetido **10 vezes**, e as médias são calculadas.
 
-Os resultados são salvos em dois arquivos CSV:
+Os resultados são salvos automaticamente em:
 
-```
-resultados_insercao_amostrado.csv
-resultados_remocao_amostrado.csv
-```
+    resultados_insercao_amostrado.csv
+    resultados_remocao_amostrado.csv
 
-Cada arquivo contém colunas no formato:
+Formato:
 
-```
-tamanho,avl,rb,b1,b5,b10
-```
+    tamanho,avl,rb,b1,b5,b10
 
----
+------------------------------------------------------------------------
 
-## 3. Implementação
+## 3. Técnicas Implementadas
 
-Foram escritos quatro módulos principais:
+### 3.1 Instrumentação detalhada
 
-* `AVL_mod.c`
-* `RubroNegra_mod.c`
-* `B_mod.c`
-* `main_experimento.c`
+#### **AVL**
 
-O programa principal:
+Contadores: 
+- VISIT
+- MOVE
+- HEIGHT
+- ROT
+- ALLOC
+- FREE
 
-1. executa todos os testes de 1 a 10.000 elementos;
-2. repete 10 vezes cada tamanho;
-3. acumula contagens de operações;
-4. salva em CSV automaticamente;
-5. não exige interação do usuário após compilado.
+#### **Rubro-Negra**
 
-### 3.1 Geração dos gráficos
+-   visitas
+-   movimentos
+-   rotações
+-   recolorizações
+-   alocações/liberações
+-   delete_fixup
 
-Os gráficos são gerados por `graficos.py`, produzindo:
+#### **B-Tree**
 
-* `grafico_insercao_linear.png`
-* `grafico_remocao_linear.png`
-* `grafico_insercao_log.png`
-* `grafico_remocao_log.png`
+-   splits
+-   merges
+-   redistribuições
+-   movimentação de chaves
+-   alocações/liberações
 
-Com escala linear e logarítmica no eixo Y.
+### 3.2 Execução automatizada completa
 
----
+### 3.3 Medição acumulada (construção inteira)
 
-## 4. Ajustes e Depuração
+### 3.4 Depuração ativável
 
-Durante o desenvolvimento:
+### 3.5 Geração automática dos gráficos
 
-* a versão inicial da **Rubro-Negra** apresentava falhas em remoção devido a estados ilegais no `delete_fixup`.
-  → Foi revisada e tornou-se mais robusta, incluindo tratamento para ponteiros nulos e casos extremos.
+------------------------------------------------------------------------
 
-* a **B-tree de ordem 1** apresentava loops infinitos durante fusão.
-  → `B_mod.c` foi corrigido para operar corretamente mesmo no limite mínimo (`t=1`).
+## 4. Implementação
 
-* Mensagens de depuração (`DEBUG`) foram incluídas e podem ser habilitadas com:
+Módulos:
 
-```c
-#define DEBUG 1
-```
+-   AVL_mod.c
+-   RubroNegra_mod.c
+-   B_mod.c
+-   main_experimento.c
+-   graficos.py
 
-Após correções, todos os testes até 10.000 chaves executaram sem travamentos.
+Fluxo: geração → inserção → medição → remoção → reconstrução → CSV
 
----
+------------------------------------------------------------------------
 
 ## 5. Resultados
 
 ### 5.1 Inserção
 
-O gráfico de inserção (`grafico_insercao_linear.png` ou `grafico_insercao_log.png`) mostra o comportamento das estruturas.
-
-#### Conclusões:
-
-* **AVL** apresentou maior custo devido ao rebalanceamento rigoroso.
-* **Rubro-Negra** teve custo menor e mais estável.
-* **B-Tree** depende fortemente da ordem:
-
-  * `t=1`: mais divisões → maior custo,
-  * `t=10`: menos divisões → menor custo.
+-   AVL = maior custo
+-   Rubro-Negra = menor custo
+-   B-tree: custo inversamente proporcional à ordem
 
 ### 5.2 Remoção
 
-O gráfico de remoção (`grafico_remocao_linear.png` ou `grafico_remocao_log.png`) apresenta o esforço para esvaziar as estruturas.
+-   Rubro-Negra = melhor
+-   AVL = cara
+-   B-tree: t=1 muito caro; t=10 barato
 
-#### Resultados:
-
-* **Rubro-Negra** novamente obteve o menor custo médio.
-* **AVL** exigiu muitas operações de rebalanceamento.
-* **B-Tree** apresentou:
-
-  * custo decrescente conforme `t` aumenta,
-  * pois menos fusões e empréstimos são necessários.
-
----
+------------------------------------------------------------------------
 
 ## 6. Discussão
 
-Os resultados estão consistentes com a teoria clássica:
+  Estrutura     Característica          Resultado Esperado   Observado
+  ------------- ----------------------- -------------------- ------------
+  AVL           balanceamento estrito   custo maior          confirmado
+  Rubro-Negra   relaxado                custo menor          confirmado
+  B-tree t=1    degenerado              pior custo           confirmado
+  B-tree t=10   poucos splits           custo reduzido       confirmado
 
-| Estrutura   | Observação Principal                          |
-| ----------- | --------------------------------------------- |
-| AVL         | Alto custo devido a balanceamento forte       |
-| Rubro-Negra | Melhor compromisso entre esforço e eficiência |
-| B-Tree      | Quanto maior a ordem, menor o custo           |
-
-A Rubro-Negra se mostrou a estrutura mais eficiente para memória primária, enquanto B-Trees de ordem maior são extremamente vantajosas em cenários de armazenamento secundário como bancos de dados.
-
----
+------------------------------------------------------------------------
 
 ## 7. Conclusão
 
-O experimento permitiu:
+O sistema:
 
-* medir empiricamente os custos de inserção e remoção;
-* comprovar a influência da ordem da B-tree no desempenho;
-* gerar gráficos comparativos claros;
-* automatizar completamente a geração dos dados e estatísticas.
+✔ mede esforço real\
+✔ gera CSVs automaticamente\
+✔ executa todo o experimento sozinho\
+✔ gera gráficos lineares/log e acumulados\
+✔ é validado até 10.000 chaves
 
-A partir de uma única execução, o sistema:
-
-1. gera dados,
-2. executa todos os experimentos,
-3. coleta operações,
-4. grava CSV,
-5. permite gerar gráficos imediatamente.
