@@ -123,12 +123,12 @@ Fluxo: geração → inserção → medição → remoção → reconstrução �
 
 ## 6. Discussão
 
-  Estrutura     Característica          Resultado Esperado   Observado
-  ------------- ----------------------- -------------------- ------------
-  AVL           balanceamento estrito   custo maior          confirmado
-  Rubro-Negra   relaxado                custo menor          confirmado
-  B-tree t=1    degenerado              pior custo           confirmado
-  B-tree t=10   poucos splits           custo reduzido       confirmado
+ | Estrutura    | Característica         | Resultado Esperado  | Observado
+ | -------------| ---------------------- | ------------------- | ------------
+ | AVL          | balanceamento estrito  | custo maior         | confirmado
+ | Rubro-Negra  | relaxado               | custo menor         | confirmado
+ | B-tree t=1   | degenerado             | pior custo          | confirmado
+ | B-tree t=10  | poucos splits          | custo reduzido      | confirmado
 
 ------------------------------------------------------------------------
 
