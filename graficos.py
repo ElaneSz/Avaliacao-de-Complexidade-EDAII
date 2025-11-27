@@ -1,64 +1,95 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 
-# -------------------------------------------------------------
-# CONFIGURAÇÕES GERAIS
-# -------------------------------------------------------------
+# -----------------------------------------------------------
+#   Leitura dos CSVs 
+# -----------------------------------------------------------
 
-ARQUIVO_INS = "resultados_insercao_real_amostrado.csv"
-ARQUIVO_REM = "resultados_remocao_real_amostrado.csv"
+insercao = pd.read_csv("resultados_insercao_acumulado.csv")
+remocao  = pd.read_csv("resultados_remocao_acumulado.csv")
 
-ESTRUTURAS = ["avl", "rb", "b1", "b5", "b10"]
-ROTULOS = {
-    "avl": "AVL",
-    "rb": "Rubro-Negra",
-    "b1": "B-Tree (ordem 1)",
-    "b5": "B-Tree (ordem 5)",
-    "b10": "B-Tree (ordem 10)"
-}
+# ===========================================================
+#   GRÁFICO 1 — Inserção (escala linear)
+# ===========================================================
 
-# -------------------------------------------------------------
-# FUNÇÃO PARA PLOTAR
-# -------------------------------------------------------------
-def plotar(df, titulo, nome_arquivo_base):
-    plt.figure(figsize=(10,6))
-    for col in ESTRUTURAS:
-        plt.plot(df["tamanho"], df[col], marker='o', label=ROTULOS[col])
-    
-    plt.title(titulo)
-    plt.xlabel("Número de Elementos (N)")
-    plt.ylabel("Custo Total de Operações")
-    plt.legend()
-    plt.grid(True)
-    plt.tight_layout()
-    plt.savefig(nome_arquivo_base + "_linear.png", dpi=300)
-    print(f"✔ Gráfico gerado: {nome_arquivo_base}_linear.png")
+plt.figure(figsize=(12,6))
 
-    # Log scale
-    plt.yscale("log")
-    plt.title(titulo + " (Escala Log)")
-    plt.tight_layout()
-    plt.savefig(nome_arquivo_base + "_log.png", dpi=300)
-    print(f"✔ Gráfico gerado: {nome_arquivo_base}_log.png")
+plt.plot(insercao["tamanho"], insercao["avl"],  label="AVL", linewidth=2)
+plt.plot(insercao["tamanho"], insercao["rb"],   label="Rubro-Negra", linewidth=2)
+plt.plot(insercao["tamanho"], insercao["b1"],   label="B-tree (ord. 1)", linewidth=2)
+plt.plot(insercao["tamanho"], insercao["b5"],   label="B-tree (ord. 5)", linewidth=2)
+plt.plot(insercao["tamanho"], insercao["b10"],  label="B-tree (ord.10)", linewidth=2)
 
+plt.title("Custo ACUMULADO de Inserção por Estrutura")
+plt.xlabel("Tamanho n")
+plt.ylabel("Custo acumulado (operações)")
+plt.grid(True)
+plt.legend()
+plt.tight_layout()
+plt.savefig("grafico_insercao_acumulado_linear.png", dpi=300)
+plt.show()
 
-# -------------------------------------------------------------
-# CARREGAR DADOS
-# -------------------------------------------------------------
-ins = pd.read_csv(ARQUIVO_INS)
-rem = pd.read_csv(ARQUIVO_REM)
+# ===========================================================
+#   GRÁFICO 2 — Inserção (escala log)
+# ===========================================================
 
-print("Arquivos carregados com sucesso!")
+plt.figure(figsize=(12,6))
 
-# -------------------------------------------------------------
-# PLOTAR
-# -------------------------------------------------------------
-plotar(ins, 
-       "Custo de Inserção — Arvores Balanceadas e B-Tree", 
-       "grafico_insercao")
+plt.plot(insercao["tamanho"], insercao["avl"],  label="AVL", linewidth=2)
+plt.plot(insercao["tamanho"], insercao["rb"],   label="Rubro-Negra", linewidth=2)
+plt.plot(insercao["tamanho"], insercao["b1"],   label="B-tree (ord. 1)", linewidth=2)
+plt.plot(insercao["tamanho"], insercao["b5"],   label="B-tree (ord. 5)", linewidth=2)
+plt.plot(insercao["tamanho"], insercao["b10"],  label="B-tree (ord.10)", linewidth=2)
 
-plotar(rem, 
-       "Custo de Remoção — Arvores Balanceadas e B-Tree", 
-       "grafico_remocao")
+plt.title("Custo ACUMULADO de Inserção (Escala Log)")
+plt.xlabel("Tamanho n")
+plt.ylabel("Custo acumulado (log)")
+plt.yscale("log")
+plt.grid(True)
+plt.legend()
+plt.tight_layout()
+plt.savefig("grafico_insercao_acumulado_log.png", dpi=300)
+plt.show()
 
-print("\nFinalizado.")
+# ===========================================================
+#   GRÁFICO 3 — Remoção (escala linear)
+# ===========================================================
+
+plt.figure(figsize=(12,6))
+
+plt.plot(remocao["tamanho"], remocao["avl"],  label="AVL", linewidth=2)
+plt.plot(remocao["tamanho"], remocao["rb"],   label="Rubro-Negra", linewidth=2)
+plt.plot(remocao["tamanho"], remocao["b1"],   label="B-tree (ord. 1)", linewidth=2)
+plt.plot(remocao["tamanho"], remocao["b5"],   label="B-tree (ord. 5)", linewidth=2)
+plt.plot(remocao["tamanho"], remocao["b10"],  label="B-tree (ord.10)", linewidth=2)
+
+plt.title("Custo ACUMULADO de Remoção (Esvaziamento)")
+plt.xlabel("Tamanho n")
+plt.ylabel("Custo acumulado (operações)")
+plt.grid(True)
+plt.legend()
+plt.tight_layout()
+plt.savefig("grafico_remocao_acumulado_linear.png", dpi=300)
+plt.show()
+
+# ===========================================================
+#   GRÁFICO 4 — Remoção (escala log)
+# ===========================================================
+
+plt.figure(figsize=(12,6))
+
+plt.plot(remocao["tamanho"], remocao["avl"],  label="AVL", linewidth=2)
+plt.plot(remocao["tamanho"], remocao["rb"],   label="Rubro-Negra", linewidth=2)
+plt.plot(remocao["tamanho"], remocao["b1"],   label="B-tree (ord. 1)", linewidth=2)
+plt.plot(remocao["tamanho"], remocao["b5"],   label="B-tree (ord. 5)", linewidth=2)
+plt.plot(remocao["tamanho"], remocao["b10"],  label="B-tree (ord.10)", linewidth=2)
+
+plt.title("Custo ACUMULADO de Remoção (Escala Log)")
+plt.xlabel("Tamanho n")
+plt.ylabel("Custo acumulado (log)")
+plt.yscale("log")
+plt.grid(True)
+plt.legend()
+plt.tight_layout()
+plt.savefig("grafico_remocao_acumulado_log.png", dpi=300)
+plt.show()
